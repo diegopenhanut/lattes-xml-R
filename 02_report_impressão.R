@@ -1,7 +1,10 @@
+# bibliotecas
+
 library(XML)
 library(lubridate)
 library(openslsx)
 
+# Funções
 
 read_lattes <- function(xmlfile) {
 	lattes_xml <- xmlParse(file = xmlfile)
@@ -158,18 +161,6 @@ get_report <- function(xmlfile) {
 
 }
 
-
-#get_eventos(lattes)
-
-# running code
-
-arquivos_professores <- list.files(path = "./data",
-								   pattern = "*.gz",
-								   full.names = TRUE)
-
-
-lattes <- read_lattes(arquivos_professores[[3]])
-
 get_producao_bibliografica <- function(xml_file){
 	lattes_xml <- read_lattes(xml_file)
 	output <- rbind(get_eventos(lattes_xml),
@@ -183,9 +174,17 @@ get_producao_bibliografica <- function(xml_file){
 }
 
 
-lala <- sapply(arquivos_professores, get_producao_bibliografica, simplify = F)
 
-output <- do.call(rbind, lala)
+# running code
+
+arquivos_professores <- list.files(path = "./data",
+								   pattern = "*.gz",
+								   full.names = TRUE)
+
+
+relatorio <- sapply(arquivos_professores, get_producao_bibliografica, simplify = F)
+
+output <- do.call(rbind, relatorio)
 
 write.csv(output, "output/producao_professores.csv")
 write.xlsx(output, file = "output/producao_professores.xlsx")
