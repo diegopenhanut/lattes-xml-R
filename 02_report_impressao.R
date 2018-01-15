@@ -2,12 +2,13 @@
 
 library(XML)
 library(lubridate)
-library(openslsx)
-
+library(openxlsx)
+library(tidyr)
 # Funções
 
 read_lattes <- function(xmlfile) {
 	lattes_xml <- xmlParse(file = xmlfile)
+	lattes_xml
 	#lattes <- xmlToList(lattes_xml)
 	#lattes
 }
@@ -186,6 +187,15 @@ relatorio <- sapply(arquivos_professores, get_producao_bibliografica, simplify =
 
 output <- do.call(rbind, relatorio)
 
-write.csv(output, "output/producao_professores.csv")
+output <- output %>% 
+	separate(xml_file,
+			 c("blank1", 
+			   "data", 
+			   "nome_professor", 
+			   "sobrenome_professor")) %>%
+	select(-blank1, data)
+
+
+write.csv(output, "output/producao_professores.csv", row.names = FALSE)
 write.xlsx(output, file = "output/producao_professores.xlsx")
 write.xlsx(output[output$ano == 2017, ], file = "output/producao_professores_2017.xlsx")
