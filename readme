@@ -1,6 +1,0 @@
-- Crie uma pasta chamada "data"
-- Faça o download dos arquivos xml dos currículos lattes de interesse
-- Rode os scripts na ordem abaixo
-	- 00_get.id.sh
-	- 01_recompres.sh
-	- 02_report_impressao.R

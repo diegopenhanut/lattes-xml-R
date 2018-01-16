@@ -15,6 +15,12 @@ read_lattes <- function(xmlfile) {
 
 # número de produções científicas
 
+get_name <- function(lattes_xml) {
+	node <- getNodeSet(lattes_xml, "//DADOS-GERAIS")
+	output <- xmlGetAttr(node[[1]], "NOME-COMPLETO")
+	output
+}
+
 get_eventos <- function(lattes_xml) {
 	output <- unlist(
 					 xpathApply(
@@ -169,7 +175,7 @@ get_producao_bibliografica <- function(xml_file){
 		  get_capitulos(lattes_xml),
 		  get_jornaisrevistas(lattes_xml),
 		  get_apres_trabalho(lattes_xml))
-	cbind(xml_file, 
+	cbind(nome = get_name(lattes_xml), 
 		  data_atualização = get_data_atualizacao(lattes_xml),
 		  output)
 }
@@ -187,13 +193,13 @@ relatorio <- sapply(arquivos_professores, get_producao_bibliografica, simplify =
 
 output <- do.call(rbind, relatorio)
 
-output <- output %>% 
-	separate(xml_file,
-			 c("blank1", 
-			   "data", 
-			   "nome_professor", 
-			   "sobrenome_professor")) %>%
-	select(-blank1, data)
+#output <- output %>% 
+	#separate(xml_file,
+			 #c("blank1", 
+			   #"data", 
+			   #"nome_professor", 
+			   #"sobrenome_professor")) %>%
+	#select(-blank1, data)
 
 
 write.csv(output, "output/producao_professores.csv", row.names = FALSE)
